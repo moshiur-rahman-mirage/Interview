@@ -1,0 +1,2374 @@
+Complete Core Java and Advanced Java Guide
+SECTION 1: JAVA FUNDAMENTALS
+1.1 JVM, JDK, and JRE
+Explanation:
+
+JVM (Java Virtual Machine): Runtime engine that executes Java bytecode. Provides platform independence by abstracting hardware/OS differences. Contains class loader, bytecode verifier, interpreter, and JIT compiler.
+JRE (Java Runtime Environment): JVM + core libraries needed to run Java applications. Does not include development tools.
+JDK (Java Development Kit): JRE + development tools (javac, jar, javadoc, debugger).
+
+Relationship: JDK ⊃ JRE ⊃ JVM
+Code Example:
+java// Compile: javac HelloWorld.java (creates .class bytecode)
+// Run: java HelloWorld (JVM executes bytecode)
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+Interview Q&A:
+Q: What is platform independence in Java?
+A: Java code compiles to bytecode (.class files) that runs on any platform with a JVM. "Write Once, Run Anywhere" (WORA). The JVM handles platform-specific execution.
+Q: What happens during java MyClass execution?
+A: 1) ClassLoader loads MyClass.class, 2) Bytecode Verifier checks for security violations, 3) JIT compiler converts hot bytecode to native machine code, 4) main() method executes.
+
+1.2 Variables, Data Types, and Operators
+Explanation:
+Variables: Named memory locations storing data.
+
+Local variables: Declared inside methods, must be initialized.
+Instance variables: Declared in class, initialized to default values.
+Static/Class variables: Shared across all instances.
+
+Primitive Data Types:
+
+Integer: byte (8-bit), short (16-bit), int (32-bit), long (64-bit)
+Floating: float (32-bit), double (64-bit)
+Character: char (16-bit Unicode)
+Boolean: boolean (true/false)
+
+Operators:
+
+Arithmetic: +, -, *, /, %
+Relational: ==, !=, >, <, >=, <=
+Logical: &&, ||, !
+Bitwise: &, |, ^, ~, <<, >>, >>>
+Assignment: =, +=, -=, *=, /=
+Ternary: condition ? expr1 : expr2
+
+Code Example:
+javapublic class DataTypesDemo {
+    static int classVar = 100; // static variable
+    int instanceVar = 50;      // instance variable
+    
+    public void method() {
+        int localVar = 10;     // local variable (must initialize)
+        
+        // Primitive types
+        byte b = 127;
+        short s = 32000;
+        int i = 2147483647;
+        long l = 9223372036854775807L;
+        float f = 3.14f;
+        double d = 3.14159265359;
+        char c = 'A';
+        boolean bool = true;
+        
+        // Operators
+        int a = 10, b = 20;
+        int sum = a + b;              // Arithmetic
+        boolean result = a > b;       // Relational
+        int max = (a > b) ? a : b;    // Ternary
+        
+        // Bitwise
+        int bitAnd = 5 & 3;           // 0101 & 0011 = 0001 (1)
+        int leftShift = 5 << 1;       // 0101 << 1 = 1010 (10)
+    }
+}
+Interview Q&A:
+Q: What's the difference between == and .equals()?
+A: == compares references (memory addresses) for objects, primitive values for primitives. .equals() compares object content. String s1="a", s2="a" → s1==s2 true (string pool). String s3=new String("a") → s1==s3 false, s1.equals(s3) true.
+Q: What's the default value of instance variables?
+A: Numeric types: 0, boolean: false, char: '\u0000', references: null. Local variables have no default—must initialize explicitly.
+
+1.3 Control Statements
+Explanation:
+Decision Making:
+
+if-else
+switch (traditional and enhanced from Java 12+)
+
+Loops:
+
+for, enhanced for (for-each)
+while, do-while
+
+Jump Statements:
+
+break, continue, return
+
+Code Example:
+javapublic class ControlFlow {
+    public static void main(String[] args) {
+        // If-else
+        int score = 85;
+        if (score >= 90) {
+            System.out.println("A");
+        } else if (score >= 80) {
+            System.out.println("B");
+        } else {
+            System.out.println("C");
+        }
+        
+        // Traditional switch
+        int day = 3;
+        switch (day) {
+            case 1:
+                System.out.println("Monday");
+                break;
+            case 2:
+                System.out.println("Tuesday");
+                break;
+            default:
+                System.out.println("Other day");
+        }
+        
+        // Enhanced switch (Java 12+, switch expression)
+        String dayName = switch (day) {
+            case 1 -> "Monday";
+            case 2 -> "Tuesday";
+            case 3 -> "Wednesday";
+            default -> "Other";
+        };
+        
+        // For loop
+        for (int i = 0; i < 5; i++) {
+            System.out.println(i);
+        }
+        
+        // Enhanced for loop
+        int[] numbers = {1, 2, 3, 4, 5};
+        for (int num : numbers) {
+            System.out.println(num);
+        }
+        
+        // While loop
+        int count = 0;
+        while (count < 3) {
+            System.out.println(count);
+            count++;
+        }
+        
+        // Do-while
+        int x = 0;
+        do {
+            System.out.println(x);
+            x++;
+        } while (x < 3);
+        
+        // Break and continue
+        for (int i = 0; i < 10; i++) {
+            if (i == 5) break;      // Exit loop
+            if (i == 3) continue;   // Skip iteration
+            System.out.println(i);
+        }
+    }
+}
+Interview Q&A:
+Q: What's the difference between break and continue?
+A: break exits the loop entirely. continue skips the current iteration and proceeds to the next iteration.
+Q: When to use switch vs if-else?
+A: Use switch for multiple discrete values of a single variable (better performance and readability). Use if-else for complex conditions, range checks, or multiple variables.
+
+SECTION 2: OBJECT-ORIENTED PROGRAMMING (OOP)
+2.1 Abstraction
+Explanation:
+Hiding implementation details and showing only essential features. Achieved through abstract classes and interfaces.
+Abstract Class:
+
+Cannot be instantiated
+Can have abstract methods (no body) and concrete methods
+Can have constructors, instance variables
+Supports single inheritance
+
+Code Example:
+java// Abstract class
+abstract class Animal {
+    String name;
+    
+    // Constructor
+    public Animal(String name) {
+        this.name = name;
+    }
+    
+    // Abstract method
+    abstract void sound();
+    
+    // Concrete method
+    void sleep() {
+        System.out.println(name + " is sleeping");
+    }
+}
+
+class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+    
+    @Override
+    void sound() {
+        System.out.println(name + " barks");
+    }
+}
+
+public class AbstractionDemo {
+    public static void main(String[] args) {
+        Animal dog = new Dog("Buddy");
+        dog.sound();  // Buddy barks
+        dog.sleep();  // Buddy is sleeping
+    }
+}
+Interview Q&A:
+Q: Why can't we instantiate abstract classes?
+A: Abstract classes are incomplete—they contain abstract methods without implementation. Instantiation would create objects that can't fulfill their contract.
+Q: Can abstract classes have constructors?
+A: Yes. Constructors are called when subclasses are instantiated to initialize the abstract class's state.
+
+2.2 Encapsulation
+Explanation:
+Bundling data (variables) and methods that operate on data into a single unit (class). Restricting direct access to object components using access modifiers.
+Access Modifiers:
+
+private: Accessible only within the class
+default (no modifier): Accessible within the package
+protected: Accessible within package and subclasses
+public: Accessible everywhere
+
+Code Example:
+javapublic class BankAccount {
+    // Private data members
+    private String accountNumber;
+    private double balance;
+    
+    // Constructor
+    public BankAccount(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+    
+    // Public getter
+    public double getBalance() {
+        return balance;
+    }
+    
+    // Public setter with validation
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+    
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+        }
+    }
+    
+    // Private helper method
+    private void logTransaction(String type, double amount) {
+        System.out.println(type + ": " + amount);
+    }
+}
+
+public class EncapsulationDemo {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount("12345", 1000);
+        account.deposit(500);
+        System.out.println("Balance: " + account.getBalance()); // 1500
+        // account.balance = 5000; // Compile error - private field
+    }
+}
+Interview Q&A:
+Q: What are the benefits of encapsulation?
+A: 1) Data hiding—prevents unauthorized access, 2) Flexibility—change implementation without affecting clients, 3) Maintainability—localized changes, 4) Validation—control data modification through setters.
+Q: Difference between encapsulation and abstraction?
+A: Encapsulation is about data hiding (how to achieve it—access modifiers). Abstraction is about hiding complexity (what to show—interfaces/abstract classes).
+
+2.3 Inheritance
+Explanation:
+Mechanism where a new class (child/subclass) acquires properties and behaviors of an existing class (parent/superclass). Promotes code reuse.
+Types:
+
+Single: Class B extends Class A
+Multilevel: Class C extends B extends A
+Hierarchical: Classes B, C extend A
+Multiple (via interfaces): Class implements Interface1, Interface2
+
+Code Example:
+java// Parent class
+class Vehicle {
+    protected String brand;
+    protected int speed;
+    
+    public Vehicle(String brand) {
+        this.brand = brand;
+    }
+    
+    public void start() {
+        System.out.println(brand + " starting");
+    }
+}
+
+// Child class
+class Car extends Vehicle {
+    private int doors;
+    
+    public Car(String brand, int doors) {
+        super(brand); // Call parent constructor
+        this.doors = doors;
+    }
+    
+    @Override
+    public void start() {
+        super.start(); // Call parent method
+        System.out.println("Car with " + doors + " doors");
+    }
+    
+    public void honk() {
+        System.out.println("Beep beep!");
+    }
+}
+
+public class InheritanceDemo {
+    public static void main(String[] args) {
+        Car car = new Car("Toyota", 4);
+        car.start();  // Toyota starting \n Car with 4 doors
+        car.honk();   // Beep beep!
+    }
+}
+Method Overriding Rules:
+
+Same method signature as parent
+Return type: same or covariant (subtype)
+Access modifier: same or less restrictive
+Cannot override final, static, or private methods
+
+Code Example (Multilevel Inheritance):
+javaclass Animal {
+    void eat() {
+        System.out.println("Eating");
+    }
+}
+
+class Mammal extends Animal {
+    void walk() {
+        System.out.println("Walking");
+    }
+}
+
+class Dog extends Mammal {
+    void bark() {
+        System.out.println("Barking");
+    }
+}
+
+public class MultilevelDemo {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        dog.eat();   // From Animal
+        dog.walk();  // From Mammal
+        dog.bark();  // From Dog
+    }
+}
+Interview Q&A:
+Q: Why doesn't Java support multiple inheritance with classes?
+A: Diamond problem—if classes B and C extend A, and both override a method, and D extends B and C, which method should D inherit? Java resolves this with interfaces (default methods use explicit resolution).
+Q: What's the difference between IS-A and HAS-A relationships?
+A: IS-A (inheritance): Dog IS-A Animal. HAS-A (composition): Car HAS-A Engine. Composition is preferred over inheritance for flexibility.
+
+2.4 Polymorphism
+Explanation:
+Ability of objects to take multiple forms. "Many forms."
+Types:
+
+Compile-time (Static) Polymorphism: Method overloading, operator overloading
+Runtime (Dynamic) Polymorphism: Method overriding
+
+Method Overloading:
+Same method name, different parameters (number, type, or order).
+Method Overriding:
+Subclass provides specific implementation of method declared in parent.
+Code Example (Overloading):
+javaclass Calculator {
+    // Overloaded methods
+    int add(int a, int b) {
+        return a + b;
+    }
+    
+    double add(double a, double b) {
+        return a + b;
+    }
+    
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+    
+    // Compile error: return type alone doesn't differentiate
+    // double add(int a, int b) { return a + b; }
+}
+Code Example (Overriding - Runtime Polymorphism):
+javaclass Shape {
+    void draw() {
+        System.out.println("Drawing shape");
+    }
+    
+    double area() {
+        return 0;
+    }
+}
+
+class Circle extends Shape {
+    private double radius;
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    void draw() {
+        System.out.println("Drawing circle");
+    }
+    
+    @Override
+    double area() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class Rectangle extends Shape {
+    private double width, height;
+    
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    void draw() {
+        System.out.println("Drawing rectangle");
+    }
+    
+    @Override
+    double area() {
+        return width * height;
+    }
+}
+
+public class PolymorphismDemo {
+    public static void main(String[] args) {
+        // Runtime polymorphism
+        Shape shape1 = new Circle(5);
+        Shape shape2 = new Rectangle(4, 6);
+        
+        shape1.draw();  // Drawing circle
+        shape2.draw();  // Drawing rectangle
+        
+        System.out.println(shape1.area()); // 78.54...
+        System.out.println(shape2.area()); // 24.0
+        
+        // Dynamic method dispatch
+        Shape[] shapes = {new Circle(3), new Rectangle(2, 3), new Circle(4)};
+        for (Shape shape : shapes) {
+            shape.draw();
+            System.out.println("Area: " + shape.area());
+        }
+    }
+}
+Interview Q&A:
+Q: What is dynamic method dispatch?
+A: Runtime determination of which overridden method to call based on the actual object type, not reference type. JVM uses the object's vtable (virtual method table) to resolve the method at runtime.
+Q: Can we override static methods?
+A: No. Static methods belong to the class, not instances. Redeclaring a static method in subclass is method hiding, not overriding. No runtime polymorphism.
+Q: Difference between overloading and overriding?
+A: Overloading: same method name, different parameters, resolved at compile-time, within same class. Overriding: same signature, different implementation in subclass, resolved at runtime.
+
+2.5 Interfaces
+Explanation:
+Blueprint of a class containing abstract methods and constants. Achieves 100% abstraction and multiple inheritance.
+Features (Java 8+):
+
+Abstract methods (implicitly public abstract)
+Default methods (concrete methods with default keyword)
+Static methods
+Private methods (Java 9+)
+Constants (implicitly public static final)
+
+Code Example:
+javainterface Flyable {
+    // Abstract method (implicitly public abstract)
+    void fly();
+    
+    // Default method (Java 8+)
+    default void land() {
+        System.out.println("Landing safely");
+    }
+    
+    // Static method (Java 8+)
+    static void checkWeather() {
+        System.out.println("Weather is clear");
+    }
+    
+    // Private method (Java 9+)
+    private void log(String message) {
+        System.out.println("Log: " + message);
+    }
+}
+
+interface Swimmable {
+    void swim();
+}
+
+// Multiple inheritance via interfaces
+class Duck implements Flyable, Swimmable {
+    @Override
+    public void fly() {
+        System.out.println("Duck flying");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println("Duck swimming");
+    }
+}
+
+public class InterfaceDemo {
+    public static void main(String[] args) {
+        Duck duck = new Duck();
+        duck.fly();           // Duck flying
+        duck.swim();          // Duck swimming
+        duck.land();          // Landing safely (default method)
+        Flyable.checkWeather(); // Weather is clear (static method)
+    }
+}
+Functional Interface:
+Interface with exactly one abstract method (SAM—Single Abstract Method). Used with lambda expressions.
+java@FunctionalInterface
+interface Calculator {
+    int calculate(int a, int b);
+    
+    // Default/static methods allowed
+    default void display() {
+        System.out.println("Calculator");
+    }
+}
+
+public class FunctionalInterfaceDemo {
+    public static void main(String[] args) {
+        // Lambda expression
+        Calculator add = (a, b) -> a + b;
+        Calculator multiply = (a, b) -> a * b;
+        
+        System.out.println(add.calculate(5, 3));       // 8
+        System.out.println(multiply.calculate(5, 3));  // 15
+    }
+}
+Interview Q&A:
+Q: Difference between abstract class and interface?
+A: Abstract class: single inheritance, can have constructors/instance variables, can have any access modifier for methods. Interface: multiple inheritance, no constructors/instance variables, methods implicitly public. Use interface for "can-do" relationships (Flyable), abstract class for "is-a" with shared implementation.
+Q: What happens if a class implements two interfaces with same default method?
+A: Compilation error. Must override the method explicitly to resolve ambiguity.
+javainterface A {
+    default void show() { System.out.println("A"); }
+}
+interface B {
+    default void show() { System.out.println("B"); }
+}
+class C implements A, B {
+    @Override
+    public void show() {
+        A.super.show(); // Explicitly call A's version
+        // Or provide own implementation
+    }
+}
+
+2.6 Abstract Classes vs Interfaces
+Code Example (Comparison):
+java// Abstract class - "is-a" relationship with shared state
+abstract class Employee {
+    protected String name;
+    protected double baseSalary;
+    
+    public Employee(String name, double baseSalary) {
+        this.name = name;
+        this.baseSalary = baseSalary;
+    }
+    
+    // Abstract method
+    abstract double calculateSalary();
+    
+    // Concrete method
+    void displayInfo() {
+        System.out.println("Name: " + name);
+    }
+}
+
+// Interface - "can-do" relationship
+interface Bonus {
+    double calculateBonus();
+}
+
+interface TaxPayer {
+    double calculateTax();
+}
+
+// Class can extend one abstract class and implement multiple interfaces
+class Manager extends Employee implements Bonus, TaxPayer {
+    private double bonusPercentage;
+    
+    public Manager(String name, double baseSalary, double bonusPercentage) {
+        super(name, baseSalary);
+        this.bonusPercentage = bonusPercentage;
+    }
+    
+    @Override
+    double calculateSalary() {
+        return baseSalary + calculateBonus();
+    }
+    
+    @Override
+    public double calculateBonus() {
+        return baseSalary * bonusPercentage;
+    }
+    
+    @Override
+    public double calculateTax() {
+        return calculateSalary() * 0.3;
+    }
+}
+
+public class AbstractVsInterfaceDemo {
+    public static void main(String[] args) {
+        Manager manager = new Manager("John", 5000, 0.2);
+        manager.displayInfo();           // Name: John
+        System.out.println("Salary: " + manager.calculateSalary()); // 6000
+        System.out.println("Tax: " + manager.calculateTax());       // 1800
+    }
+}
+
+SECTION 3: STRINGS, STRINGBUILDER, AND STRINGBUFFER
+3.1 String Immutability
+Explanation:
+String objects are immutable—once created, cannot be modified. Any operation creates a new String object.
+Why Immutable?
+
+Security: Strings used in sensitive operations (database connections, file paths)
+Thread Safety: Immutable objects are inherently thread-safe
+Caching: String pool enables memory efficiency
+Hashing: Immutable hashCode ensures HashMap integrity
+
+String Pool:
+JVM maintains a pool of String literals in heap memory. When creating a String literal, JVM checks the pool first. If exists, returns reference; otherwise, creates new String and adds to pool.
+Code Example:
+javapublic class StringImmutabilityDemo {
+    public static void main(String[] args) {
+        // String literals - stored in String pool
+        String s1 = "Hello";
+        String s2 = "Hello";
+        System.out.println(s1 == s2);  // true (same reference)
+        
+        // String object - heap memory
+        String s3 = new String("Hello");
+        System.out.println(s1 == s3);  // false (different references)
+        System.out.println(s1.equals(s3)); // true (same content)
+        
+        // Immutability demonstration
+        String original = "Java";
+        String modified = original.concat(" Programming");
+        System.out.println(original);  // Java (unchanged)
+        System.out.println(modified);  // Java Programming (new object)
+        
+        // intern() method - adds to string pool
+        String s4 = new String("Test").intern();
+        String s5 = "Test";
+        System.out.println(s4 == s5);  // true (both reference pool)
+        
+        // String concatenation in loop (inefficient)
+        String result = "";
+        for (int i = 0; i < 1000; i++) {
+            result += i; // Creates 1000 String objects!
+        }
+    }
+}
+Interview Q&A:
+Q: Why are Strings immutable?
+A: Security (prevent modification of sensitive data), thread safety (no synchronization needed), caching (String pool), hashCode consistency (safe for HashMap keys).
+Q: What's the difference between String s = "Hello" and String s = new String("Hello")?
+A: First uses String pool (checks pool first). Second always creates new object in heap. Use literals for efficiency.
+
+3.2 StringBuilder and StringBuffer
+Explanation:
+Mutable alternatives to String for efficient string manipulation.
+StringBuilder:
+
+Mutable
+Not thread-safe
+Faster (no synchronization overhead)
+Introduced in Java 5
+
+StringBuffer:
+
+Mutable
+Thread-safe (synchronized methods)
+Slower than StringBuilder
+Legacy class (Java 1.0)
+
+When to Use:
+
+Use String for immutable, small concatenations
+Use StringBuilder for single-threaded mutable operations
+Use StringBuffer for multi-threaded mutable operations
+
+Code Example:
+javapublic class StringBuilderBufferDemo {
+    public static void main(String[] args) {
+        // StringBuilder - not thread-safe, faster
+        StringBuilder sb = new StringBuilder("Hello");
+        sb.append(" World");
+        sb.insert(5, ",");
+        sb.replace(0, 5, "Hi");
+        sb.delete(2, 3);
+        sb.reverse();
+        System.out.println(sb); // dlroW ,iH
+        
+        // Chaining methods
+        StringBuilder builder = new StringBuilder()
+            .append("Java")
+            .append(" ")
+            .append("Programming")
+            .insert(4, " 17");
+        System.out.println(builder); // Java 17 Programming
+        
+        // StringBuffer - thread-safe, slower
+        StringBuffer sbf = new StringBuffer("Thread");
+        sbf.append("-Safe");
+        System.out.println(sbf); // Thread-Safe
+        
+        // Performance comparison
+        long start, end;
+        
+        // String concatenation (slow)
+        start = System.currentTimeMillis();
+        String str = "";
+        for (int i = 0; i < 10000; i++) {
+            str += i;
+        }
+        end = System.currentTimeMillis();
+        System.out.println("String: " + (end - start) + "ms");
+        
+        // StringBuilder (fast)
+        start = System.currentTimeMillis();
+        StringBuilder sb2 = new StringBuilder();
+        for (int i = 0; i < 10000; i++) {
+            sb2.append(i);
+        }
+        end = System.currentTimeMillis();
+        System.out.println("StringBuilder: " + (end - start) + "ms");
+    }
+}
+Common Methods:
+javapublic class StringMethodsDemo {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder(50); // Initial capacity
+        
+        // Capacity management
+        System.out.println("Capacity: " + sb.capacity()); // 50
+        System.out.println("Length: " + sb.length());     // 0
+        
+        sb.append("Hello");
+        sb.ensureCapacity(100); // Increase capacity
+        
+        // Methods
+        sb.append(" World");     // Add to end
+        sb.insert(5, ",");       // Insert at index
+        sb.delete(5, 6);         // Delete range
+        sb.deleteCharAt(5);      // Delete at index
+        sb.replace(0, 5, "Hi");  // Replace range
+        sb.reverse();            // Reverse
+        
+        // Extract substring
+        String sub = sb.substring(0, 5);
+        
+        // Character access
+        char ch = sb.charAt(0);
+        sb.setCharAt(0, 'X');
+    }
+}
+Interview Q&A:
+Q: Difference between StringBuilder and StringBuffer?
+A: StringBuilder is not thread-safe but faster. StringBuffer is thread-safe (synchronized) but slower. Use StringBuilder in single-threaded scenarios, StringBuffer in multi-threaded.
+Q: How does StringBuilder improve performance over String concatenation?
+A: String concatenation creates new objects for each operation. StringBuilder modifies the same object, avoiding object creation overhead and garbage collection pressure.
+Q: What's the default capacity of StringBuilder?
+A: 16 characters. When exceeded, capacity becomes (oldCapacity * 2) + 2.
+
+SECTION 4: ARRAYS, ENUMS, AND WRAPPER CLASSES
+4.1 Arrays
+Explanation:
+Fixed-size, contiguous memory structure storing elements of the same type. Can be single or multi-dimensional.
+Code Example:
+javaimport java.util.Arrays;
+
+public class ArrayDemo {
+    public static void main(String[] args) {
+        // Declaration and initialization
+        int[] arr1 = new int[5];              // Default values (0)
+        int[] arr2 = {1, 2, 3, 4, 5};         // Initialization
+        int[] arr3 = new int[]{10, 20, 30};   // Anonymous array
+        
+        // Access and modification
+        arr1[0] = 100;
+        System.out.println(arr1[0]); // 100
+        
+        // Length
+        System.out.println(arr2.length); // 5
+        
+        // Iteration
+        for (int i = 0; i < arr2.length; i++) {
+            System.out.print(arr2[i] + " ");
+        }
+        
+        // Enhanced for loop
+        for (int num : arr2) {
+            System.out.print(num + " ");
+        }
+        
+        // Multi-dimensional arrays
+        int[][] matrix = {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
+        };
+        System.out.println(matrix[1][2]); // 6
+        
+        // Jagged array (irregular)
+        int[][] jagged = new int[3][];
+        jagged[0] = new int[]{1, 2};
+        jagged[1] = new int[]{3, 4, 5};
+        jagged[2] = new int[]{6};
+        
+        // Arrays utility class
+        int[] numbers = {5, 2, 8, 1, 9};
+        
+        // Sort
+        Arrays.sort(numbers);
+        System.out.println(Arrays.toString(numbers)); // [1, 2, 5, 8, 9]
+        
+        // Binary search (requires sorted array)
+        int index = Arrays.binarySearch(numbers, 5);
+        System.out.println("Index of 5: " + index); // 2
+        
+        // Fill
+        int[] filled = new int[5];
+        Arrays.fill(filled, 10);
+        System.out.println(Arrays.toString(filled)); // [10, 10, 10, 10, 10]
+        
+        // Copy
+        int[] copy = Arrays.copyOf(numbers, 7); // Extend length
+        System.out.println(Arrays.toString(copy)); // [1, 2, 5, 8, 9, 0, 0]
+        
+        int[] rangeCopy = Arrays.copyOfRange(numbers, 1, 4);
+        System.out.println(Arrays.toString(rangeCopy)); // [2, 5, 8]
+        
+        // Equals
+        int[] arr4 = {1, 2, 3};
+        int[] arr5 = {1, 2, 3};
+        System.out.println(arr4 == arr5);           // false (different refs)
+        System.out.println(Arrays.equals(arr4, arr5)); // true (same content)
+        
+        // Stream operations (Java 8+)
+        int sum = Arrays.stream(numbers).sum();
+        double avg = Arrays.stream(numbers).average().orElse(0);
+    }
+}
+Interview Q&A:
+Q: How is array stored in memory?
+A: Arrays are objects stored in heap memory. The array variable holds a reference to the first element. Elements are stored contiguously in memory.
+Q: What happens when accessing an index out of bounds?
+A: ArrayIndexOutOfBoundsException is thrown at runtime.
+Q: Can array size change after creation?
+A: No. Arrays are fixed size. Use ArrayList for dynamic sizing.
+
+4.2 Enums
+Explanation:
+Special type for representing a fixed setMRContinueof constants. Type-safe alternative to integer constants.
+Code Example:
+java// Simple enum
+enum Day {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+}
+
+// Enum with fields, constructors, and methods
+enum Planet {
+    MERCURY(3.303e+23, 2.4397e6),
+    EARTH(5.976e+24, 6.37814e6),
+    MARS(6.421e+23, 3.3972e6);
+    
+    private final double mass;   // in kilograms
+    private final double radius; // in meters
+    
+    // Constructor
+    Planet(double mass, double radius) {
+        this.mass = mass;
+        this.radius = radius;
+    }
+    
+    // Methods
+    public double getMass() { return mass; }
+    public double getRadius() { return radius; }
+    
+    public double surfaceGravity() {
+        final double G = 6.67300E-11;
+        return G * mass / (radius * radius);
+    }
+}
+
+// Enum with abstract method
+enum Operation {
+    PLUS {
+        @Override
+        public double apply(double x, double y) {
+            return x + y;
+        }
+    },
+    MINUS {
+        @Override
+        public double apply(double x, double y) {
+            return x - y;
+        }
+    },
+    MULTIPLY {
+        @Override
+        public double apply(double x, double y) {
+            return x * y;
+        }
+    };
+    
+    public abstract double apply(double x, double y);
+}
+
+public class EnumDemo {
+    public static void main(String[] args) {
+        // Basic usage
+        Day today = Day.MONDAY;
+        System.out.println(today); // MONDAY
+        
+        // Switch with enum
+        switch (today) {
+            case MONDAY:
+                System.out.println("Start of work week");
+                break;
+            case FRIDAY:
+                System.out.println("TGIF!");
+                break;
+            default:
+                System.out.println("Midweek");
+        }
+        
+        // Enum methods
+        System.out.println(today.name());      // MONDAY
+        System.out.println(today.ordinal());   // 0 (position)
+        
+        // values() - returns all enum constants
+        for (Day day : Day.values()) {
+            System.out.println(day);
+        }
+        
+        // valueOf() - string to enum
+        Day day = Day.valueOf("TUESDAY");
+        System.out.println(day); // TUESDAY
+        
+        // Enum with fields
+        Planet earth = Planet.EARTH;
+        System.out.println("Earth mass: " + earth.getMass());
+        System.out.println("Earth gravity: " + earth.surfaceGravity());
+        
+        // Enum with abstract method
+        double result = Operation.PLUS.apply(5, 3);
+        System.out.println(result); // 8.0
+        
+        // EnumSet and EnumMap
+        java.util.EnumSet<Day> weekend = java.util.EnumSet.of(Day.SATURDAY, Day.SUNDAY);
+        java.util.EnumMap<Day, String> activities = new java.util.EnumMap<>(Day.class);
+        activities.put(Day.MONDAY, "Work");
+        activities.put(Day.SATURDAY, "Relax");
+    }
+}
+Interview Q&A:
+Q: Can we extend enums?
+A: No. All enums implicitly extend java.lang.Enum and Java doesn't support multiple inheritance.
+Q: Can enums implement interfaces?
+A: Yes. Enums can implement interfaces.
+Q: Why use enums over constants?
+A: Type safety (can't assign int to Day), namespace (Day.MONDAY vs MONDAY constant), methods and fields, switch case completeness checking, can implement interfaces.
+
+4.3 Wrapper Classes, Autoboxing, and Unboxing
+Explanation:
+Wrapper classes convert primitives to objects. Required for Collections (which only store objects), generics, and utility methods.
+Wrapper Classes:
+
+byte → Byte
+short → Short
+int → Integer
+long → Long
+float → Float
+double → Double
+char → Character
+boolean → Boolean
+
+Autoboxing: Automatic conversion of primitive to wrapper object.
+Unboxing: Automatic conversion of wrapper object to primitive.
+Code Example:
+javapublic class WrapperDemo {
+    public static void main(String[] args) {
+        // Boxing (primitive to object) - manual
+        Integer obj1 = Integer.valueOf(10);
+        
+        // Autoboxing (automatic)
+        Integer obj2 = 10; // Compiler: Integer.valueOf(10)
+        
+        // Unboxing (object to primitive) - manual
+        int num1 = obj1.intValue();
+        
+        // Auto-unboxing (automatic)
+        int num2 = obj2; // Compiler: obj2.intValue()
+        
+        // Usage in collections
+        java.util.ArrayList<Integer> list = new java.util.ArrayList<>();
+        list.add(10);    // Autoboxing
+        int value = list.get(0); // Auto-unboxing
+        
+        // Wrapper utility methods
+        // Parsing
+        int parsed = Integer.parseInt("123");
+        double d = Double.parseDouble("3.14");
+        
+        // Conversion
+        String str = Integer.toString(100);
+        String binary = Integer.toBinaryString(10); // "1010"
+        String hex = Integer.toHexString(255);      // "ff"
+        
+        // Comparison
+        Integer a = 100, b = 200;
+        System.out.println(Integer.compare(a, b)); // -1 (a < b)
+        
+        // Min/Max values
+        System.out.println(Integer.MAX_VALUE); // 2147483647
+        System.out.println(Integer.MIN_VALUE); // -2147483648
+        
+        // Caching demonstration
+        Integer x1 = 127;
+        Integer x2 = 127;
+        System.out.println(x1 == x2); // true (cached)
+        
+        Integer y1 = 128;
+        Integer y2 = 128;
+        System.out.println(y1 == y2); // false (not cached)
+        System.out.println(y1.equals(y2)); // true (value comparison)
+        
+        // valueOf vs constructor
+        Integer i1 = Integer.valueOf(10);   // Uses cache
+        Integer i2 = new Integer(10);        // Always new object (deprecated)
+        
+        // NullPointerException risk with auto-unboxing
+        Integer nullInt = null;
+        // int primitive = nullInt; // NullPointerException!
+        
+        // Character wrapper
+        Character ch = 'A';
+        System.out.println(Character.isDigit(ch));      // false
+        System.out.println(Character.isLetter(ch));     // true
+        System.out.println(Character.toUpperCase('a')); // A
+        System.out.println(Character.toLowerCase('B')); // b
+    }
+}
+```
+
+**Caching:**
+Java caches wrapper objects for:
+- Integer, Short, Byte, Character: -128 to 127
+- Boolean: true, false
+
+**Interview Q&A:**
+
+Q: What's the output of: Integer a = 1000; Integer b = 1000; System.out.println(a == b);?
+A: false. Values outside -128 to 127 aren't cached, so new objects are created. Use .equals() for value comparison.
+
+Q: Why can't Collections store primitives?
+A: Collections are designed for objects (references). Primitives aren't objects. Generics (e.g., List<T>) require reference types due to type erasure.
+
+Q: Performance cost of autoboxing?
+A: Object creation overhead and memory consumption. In tight loops, use primitives to avoid unnecessary boxing/unboxing.
+
+---
+
+## SECTION 5: COLLECTIONS FRAMEWORK
+
+### 5.1 Overview
+
+**Explanation:**
+Unified architecture for storing and manipulating groups of objects. Provides interfaces (contracts), implementations (classes), and algorithms (methods).
+
+**Core Interfaces Hierarchy:**
+```
+Collection (interface)
+├── List (ordered, allows duplicates)
+│   ├── ArrayList
+│   ├── LinkedList
+│   └── Vector (legacy, synchronized)
+├── Set (no duplicates)
+│   ├── HashSet
+│   ├── LinkedHashSet
+│   └── TreeSet (sorted)
+└── Queue (FIFO)
+    ├── PriorityQueue
+    └── Deque (double-ended queue)
+        └── ArrayDeque
+
+Map (key-value pairs, not in Collection hierarchy)
+├── HashMap
+├── LinkedHashMap
+├── TreeMap (sorted by keys)
+└── Hashtable (legacy, synchronized)
+Code Example (Overview):
+javaimport java.util.*;
+
+public class CollectionsOverview {
+    public static void main(String[] args) {
+        // List - ordered, duplicates allowed
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Apple"); // Duplicate allowed
+        System.out.println(list); // [Apple, Banana, Apple]
+        
+        // Set - no duplicates
+        Set<String> set = new HashSet<>();
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Apple"); // Duplicate ignored
+        System.out.println(set); // [Apple, Banana] (unordered)
+        
+        // Queue - FIFO
+        Queue<String> queue = new LinkedList<>();
+        queue.offer("First");
+        queue.offer("Second");
+        System.out.println(queue.poll()); // First (remove and return)
+        
+        // Map - key-value pairs
+        Map<String, Integer> map = new HashMap<>();
+        map.put("Apple", 10);
+        map.put("Banana", 20);
+        System.out.println(map.get("Apple")); // 10
+    }
+}
+
+5.2 List Interface
+Explanation:
+Ordered collection that allows duplicates. Elements accessible by index.
+Implementations:
+
+ArrayList: Resizable array, fast random access, slow insertion/deletion in middle
+LinkedList: Doubly-linked list, fast insertion/deletion, slow random access
+Vector: Legacy, synchronized, similar to ArrayList
+
+Code Example:
+javaimport java.util.*;
+
+public class ListDemo {
+    public static void main(String[] args) {
+        // ArrayList
+        List<String> arrayList = new ArrayList<>();
+        arrayList.add("Java");
+        arrayList.add("Python");
+        arrayList.add("C++");
+        arrayList.add(1, "JavaScript"); // Insert at index
+        System.out.println(arrayList); // [Java, JavaScript, Python, C++]
+        
+        // Access by index
+        System.out.println(arrayList.get(0)); // Java
+        
+        // Modify
+        arrayList.set(0, "Kotlin");
+        
+        // Remove
+        arrayList.remove(1);              // Remove by index
+        arrayList.remove("Python");       // Remove by object
+        
+        // Search
+        int index = arrayList.indexOf("C++");
+        boolean contains = arrayList.contains("Java");
+        
+        // Size
+        System.out.println(arrayList.size());
+        
+        // Iteration
+        for (String lang : arrayList) {
+            System.out.println(lang);
+        }
+        
+        // Iterator
+        Iterator<String> it = arrayList.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+        
+        // ListIterator (bidirectional)
+        ListIterator<String> listIt = arrayList.listIterator();
+        while (listIt.hasNext()) {
+            System.out.println(listIt.next());
+        }
+        while (listIt.hasPrevious()) {
+            System.out.println(listIt.previous());
+        }
+        
+        // Sublist
+        List<String> sublist = arrayList.subList(0, 2);
+        
+        // LinkedList specific methods
+        LinkedList<String> linkedList = new LinkedList<>();
+        linkedList.addFirst("First");
+        linkedList.addLast("Last");
+        linkedList.removeFirst();
+        linkedList.removeLast();
+        System.out.println(linkedList.getFirst());
+        System.out.println(linkedList.getLast());
+        
+        // Sorting
+        List<Integer> numbers = Arrays.asList(5, 2, 8, 1, 9);
+        Collections.sort(numbers);
+        System.out.println(numbers); // [1, 2, 5, 8, 9]
+        
+        // Custom sorting with Comparator
+        Collections.sort(numbers, Collections.reverseOrder());
+        System.out.println(numbers); // [9, 8, 5, 2, 1]
+        
+        // Java 8+ List.sort()
+        numbers.sort(Comparator.naturalOrder());
+    }
+}
+Interview Q&A:
+Q: ArrayList vs LinkedList?
+A: ArrayList: backed by array, O(1) random access, O(n) insertion/deletion in middle, better for read-heavy. LinkedList: doubly-linked nodes, O(n) random access, O(1) insertion/deletion at ends, better for frequent modifications.
+Q: When does ArrayList resize?
+A: When size exceeds capacity. New capacity = (oldCapacity * 3/2) + 1. Resizing involves creating new array and copying elements (expensive operation).
+Q: Is ArrayList thread-safe?
+A: No. Use Collections.synchronizedList() or CopyOnWriteArrayList for thread safety.
+
+5.3 Set Interface
+Explanation:
+Collection that doesn't allow duplicates. No index-based access.
+Implementations:
+
+HashSet: Backed by HashMap, O(1) operations, unordered
+LinkedHashSet: Maintains insertion order, slightly slower than HashSet
+TreeSet: Sorted (natural or custom), O(log n) operations, backed by TreeMap
+
+Code Example:
+javaimport java.util.*;
+
+public class SetDemo {
+    public static void main(String[] args) {
+        // HashSet - unordered, no duplicates
+        Set<String> hashSet = new HashSet<>();
+        hashSet.add("Apple");
+        hashSet.add("Banana");
+        hashSet.add("Cherry");
+        hashSet.add("Apple"); // Duplicate ignored
+        System.out.println(hashSet); // [Apple, Cherry, Banana] (unordered)
+        
+        // LinkedHashSet - maintains insertion order
+        Set<String> linkedHashSet = new LinkedHashSet<>();
+        linkedHashSet.add("Apple");
+        linkedHashSet.add("Banana");
+        linkedHashSet.add("Cherry");
+        System.out.println(linkedHashSet); // [Apple, Banana, Cherry]
+        
+        // TreeSet - sorted order
+        Set<String> treeSet = new TreeSet<>();
+        treeSet.add("Banana");
+        treeSet.add("Apple");
+        treeSet.add("Cherry");
+        System.out.println(treeSet); // [Apple, Banana, Cherry]
+        
+        // TreeSet with custom comparator
+        Set<String> reverseSet = new TreeSet<>(Collections.reverseOrder());
+        reverseSet.add("Banana");
+        reverseSet.add("Apple");
+        System.out.println(reverseSet); // [Banana, Apple]
+        
+        // Set operations
+        Set<Integer> set1 = new HashSet<>(Arrays.asList(1, 2, 3, 4));
+        Set<Integer> set2 = new HashSet<>(Arrays.asList(3, 4, 5, 6));
+        
+        // Union
+        Set<Integer> union = new HashSet<>(set1);
+        union.addAll(set2);
+        System.out.println("Union: " + union); // [1, 2, 3, 4, 5, 6]
+        
+        // Intersection
+        Set<Integer> intersection = new HashSet<>(set1);
+        intersection.retainAll(set2);
+        System.out.println("Intersection: " + intersection); // [3, 4]
+        
+        // Difference
+        Set<Integer> difference = new HashSet<>(set1);
+        difference.removeAll(set2);
+        System.out.println("Difference: " + difference); // [1, 2]
+        
+        // TreeSet specific methods
+        TreeSet<Integer> numbers = new TreeSet<>(Arrays.asList(5, 2, 8, 1, 9));
+        System.out.println(numbers.first());     // 1
+        System.out.println(numbers.last());      // 9
+        System.out.println(numbers.headSet(5));  // [1, 2] (< 5)
+        System.out.println(numbers.tailSet(5));  // [5, 8, 9] (>= 5)
+        System.out.println(numbers.subSet(2, 8)); // [2, 5] (>= 2 and < 8)
+    }
+}
+Interview Q&A:
+Q: How does HashSet ensure uniqueness?
+A: Uses HashMap internally. Element stored as key (value is dummy PRESENT object). HashMap doesn't allow duplicate keys. Relies on hashCode() and equals().
+Q: Why is TreeSet slower than HashSet?
+A: TreeSet maintains sorted order using Red-Black tree (self-balancing BST), requiring O(log n) for operations vs O(1) for HashSet.
+Q: What happens if we add null to TreeSet?
+A: NullPointerException (unless custom comparator handles null). HashSet allows one null element.
+
+5.4 Map Interface
+Explanation:
+Key-value pairs. No duplicate keys.
+Implementations:
+
+HashMap: Unordered, O(1) operations, allows one null key
+LinkedHashMap: Maintains insertion order
+TreeMap: Sorted by keys, O(log n) operations
+Hashtable: Legacy, synchronized, no null keys/values
+
+Code Example:
+javaimport java.util.*;
+
+public class MapDemo {
+    public static void main(String[] args) {
+        // HashMap
+        Map<String, Integer> hashMap = new HashMap<>();
+        hashMap.put("Apple", 10);
+        hashMap.put("Banana", 20);
+        hashMap.put("Cherry", 30);
+        hashMap.put("Apple", 15); // Updates value
+        System.out.println(hashMap); // {Apple=15, Cherry=30, Banana=20}
+        
+        // Access
+        System.out.println(hashMap.get("Apple")); // 15
+        System.out.println(hashMap.getOrDefault("Orange", 0)); // 0
+        
+        // Check existence
+        System.out.println(hashMap.containsKey("Apple"));   // true
+        System.out.println(hashMap.containsValue(20));      // true
+        
+        // Remove
+        hashMap.remove("Banana");
+        
+        // Size
+        System.out.println(hashMap.size());
+        
+        // Iteration methods
+        // 1. Key set
+        for (String key : hashMap.keySet()) {
+            System.out.println(key + ": " + hashMap.get(key));
+        }
+        
+        // 2. Values
+        for (Integer value : hashMap.values()) {
+            System.out.println(value);
+        }
+        
+        // 3. Entry set (most efficient)
+        for (Map.Entry<String, Integer> entry : hashMap.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        
+        // Java 8+ forEach
+        hashMap.forEach((key, value) -> 
+            System.out.println(key + ": " + value));
+        
+        // Java 8+ methods
+        hashMap.putIfAbsent("Date", 40);
+        hashMap.compute("Apple", (k, v) -> v + 5);
+        hashMap.merge("Apple", 10, Integer::sum);
+        
+        // LinkedHashMap - maintains insertion order
+        Map<String, Integer> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put("C", 3);
+        linkedHashMap.put("A", 1);
+        linkedHashMap.put("B", 2);
+        System.out.println(linkedHashMap); // {C=3, A=1, B=2}
+        
+        // TreeMap - sorted by keys
+        Map<String, Integer> treeMap = new TreeMap<>();
+        treeMap.put("C", 3);
+        treeMap.put("A", 1);
+        treeMap.put("B", 2);
+        System.out.println(treeMap); // {A=1, B=2, C=3}
+        
+        // TreeMap specific methods
+        TreeMap<String, Integer> sortedMap = new TreeMap<>(treeMap);
+        System.out.println(sortedMap.firstKey());      // A
+        System.out.println(sortedMap.lastKey());       // C
+        System.out.println(sortedMap.headMap("B"));    // {A=1}
+        System.out.println(sortedMap.tailMap("B"));    // {B=2, C=3}
+        System.out.println(sortedMap.subMap("A", "C")); // {A=1, B=2}
+    }
+}
+Interview Q&A:
+Q: How does HashMap work internally?
+A: Uses array of Node objects (buckets). Key's hashCode() determines bucket index. If collision, uses linked list (Java 8+: converts to balanced tree after 8 elements). get/put: O(1) average, O(n) worst case.
+Q: What's the default capacity and load factor?
+A: Capacity: 16, Load factor: 0.75. When size > capacity * load factor, rehashing occurs (capacity doubles).
+Q: HashMap vs Hashtable?
+A: HashMap: not synchronized, allows null key/values, faster. Hashtable: synchronized, no nulls, legacy. Use ConcurrentHashMap for thread-safe alternative.
+
+5.5 Queue and Deque
+Explanation:
+Queue: FIFO (First-In-First-Out) structure.
+Deque (Double-Ended Queue): Insert/remove from both ends.
+Code Example:
+javaimport java.util.*;
+
+public class QueueDequeDemo {
+    public static void main(String[] args) {
+        // Queue - FIFO
+        Queue<String> queue = new LinkedList<>();
+        queue.offer("First");   // Add to tail (returns boolean)
+        queue.offer("Second");
+        queue.offer("Third");
+        
+        System.out.println(queue.peek());   // First (doesn't remove)
+        System.out.println(queue.poll());   // First (removes and returns)
+        System.out.println(queue);          // [Second, Third]
+        
+        // PriorityQueue - natural ordering or comparator
+        Queue<Integer> priorityQueue = new PriorityQueue<>();
+        priorityQueue.offer(5);
+        priorityQueue.offer(1);
+        priorityQueue.offer(3);
+        System.out.println(priorityQueue.poll()); // 1 (min heap)
+        System.out.println(priorityQueue.poll()); // 3
+        
+        // PriorityQueue with custom comparator (max heap)
+        Queue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        maxHeap.offer(5);
+        maxHeap.offer(1);
+        maxHeap.offer(3);
+        System.out.println(maxHeap.poll()); // 5
+        
+        // Deque - double-ended queue
+        Deque<String> deque = new ArrayDeque<>();
+        
+        // Add to both ends
+        deque.offerFirst("First");
+        deque.offerLast("Last");
+        deque.offerFirst("New First");
+        System.out.println(deque); // [New First, First, Last]
+        
+        // Remove from both ends
+        System.out.println(deque.pollFirst()); // New First
+        System.out.println(deque.pollLast());  // Last
+        
+        // Peek both ends
+        System.out.println(deque.peekFirst());
+        System.out.println(deque.peekLast());
+        
+        // Use Deque as Stack (LIFO)
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(1);    // Add to front
+        stack.push(2);
+        stack.push(3);
+        System.out.println(stack.pop()); // 3 (remove from front)
+        System.out.println(stack.peek()); // 2
+    }
+}
+Interview Q&A:
+Q: Difference between offer() and add() in Queue?
+A: offer() returns false if element can't be added (capacity-constrained queue). add() throws IllegalStateException. Prefer offer() for bounded queues.
+Q: Why use ArrayDeque over Stack?
+A: Stack is legacy and synchronized (slower). ArrayDeque is faster, more efficient, and implements Deque interface with richer API.
+Q: How does PriorityQueue maintain order?
+A: Uses min-heap (binary heap) structure. Root is always minimum element (or maximum with reverse comparator). O(log n) insertion/removal.
+
+5.6 Collection Internals: HashMap
+Explanation:
+HashMap uses array + linked list + balanced tree (Java 8+).
+Internal Structure:
+
+Array of Node objects (buckets)
+Each Node contains: key, value, hash, next reference
+Collision handling: linked list → balanced tree (threshold: 8 elements)
+
+Operations:
+
+put(key, value):
+
+Calculate hash: hash = key.hashCode() ^ (hash >>> 16) (reduce collisions)
+Find bucket: index = hash & (capacity - 1) (bitwise AND with capacity-1)
+If empty, create node
+If collision, traverse list/tree, update if key exists, else add new node
+If size > threshold, resize (double capacity)
+
+
+get(key):
+
+Calculate hash and bucket index
+Compare keys using equals()
+Return value if found, else null
+
+
+
+Code Example:
+javaimport java.util.*;
+
+public class HashMapInternals {
+    public static void main(String[] args) {
+        // HashMap with initial capacity and load factor
+        Map<String, Integer> map = new HashMap<>(16, 0.75f);
+        
+        // Demonstrating collision
+        // Keys with same hashCode will collide
+        map.put("FB", 1);  // hashCode: 2236
+        map.put("Ea", 2);  // hashCode: 2236 (collision!)
+        
+        System.out.println(map);
+        
+        // HashMap statistics
+        System.out.println("Size: " + map.size());
+        
+        // Custom hashCode demonstration
+        class Person {
+            String name;
+            int age;
+            
+            public Person(String name, int age) {
+                this.name = name;
+                this.age = age;
+            }
+            
+            @Override
+            public int hashCode() {
+                return Objects.hash(name, age);
+            }
+            
+            @Override
+            public boolean equals(Object obj) {
+                if (this == obj) return true;
+                if (obj == null || getClass() != obj.getClass()) return false;
+                Person person = (Person) obj;
+                return age == person.age && Objects.equals(name, person.name);
+            }
+        }
+        
+        Map<Person, String> personMap = new HashMap<>();
+        Person p1 = new Person("John", 30);
+        Person p2 = new Person("John", 30); // Equal to p1
+        
+        personMap.put(p1, "Engineer");
+        System.out.println(personMap.get(p2)); // Engineer (equals works)
+        
+        // Resize demonstration
+        Map<Integer, String> resizeMap = new HashMap<>(2);
+        for (int i = 0; i < 20; i++) {
+            resizeMap.put(i, "Value" + i);
+            // Resize happens at size > capacity * 0.75
+        }
+    }
+}
+Interview Q&A:
+Q: Why is capacity always a power of 2?
+A: Allows fast modulo operation using bitwise AND: hash & (capacity - 1) instead of hash % capacity. For capacity=16, capacity-1=15 (binary: 1111), AND operation masks high-order bits.
+Q: What happens if hashCode() returns constant?
+A: All entries go into same bucket, degrading to O(n) linked list/tree traversal. HashMap becomes inefficient.
+Q: When does linked list convert to tree in HashMap?
+A: When bucket size exceeds TREEIFY_THRESHOLD (8) and capacity >= MIN_TREEIFY_CAPACITY (64). Converts to balanced tree for O(log n) operations.
+
+5.7 Collection Internals: ConcurrentHashMap
+Explanation:
+Thread-safe alternative to HashMap. Uses segmentation (Java 7) or CAS operations + synchronized blocks (Java 8+).
+Java 8+ Implementation:
+
+Array of Node[] (similar to HashMap)
+Fine-grained locking: locks only specific bucket during write
+Read operations don't require locks (using volatile)
+Uses CAS (Compare-And-Swap) for atomic operations
+
+Code Example:
+javaimport java.util.concurrent.*;
+
+public class ConcurrentHashMapDemo {
+    public static void main(String[] args) throws InterruptedException {
+        ConcurrentHashMap<String, Integer> concurrentMap = new ConcurrentHashMap<>();
+        
+        // Thread-safe operations
+        concurrentMap.put("A", 1);
+        concurrentMap.put("B", 2);
+        
+        // Atomic operations
+        concurrentMap.putIfAbsent("C", 3);
+        concurrentMap.computeIfAbsent("D", k -> 4);
+        concurrentMap.computeIfPresent("A", (k, v) -> v + 10);
+        concurrentMap.merge("B", 5, Integer::sum);
+        
+        System.out.println(concurrentMap); // {A=11, B=7, C=3, D=4}
+        
+        // Multi-threaded usage
+        ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
+        
+        // Multiple threads writing concurrently
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                map.put(i, i);
+            }
+        });
+        
+        Thread t2 = new Thread(() -> {
+            for (int i = 1000; i < 2000; i++) {
+                map.put(i, i);
+            }
+        });
+        
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        
+        System.out.println("Size: " + map.size()); // 2000 (thread-safe)
+        
+        // Bulk operations (Java 8+)
+        concurrentMap.forEach((k, v) -> System.out.println(k + ":" + v));
+        
+        // Search
+        String result = concurrentMap.search(1, (k, v) -> v > 5 ? k : null);
+        System.out.println("Found: " + result);
+        
+        // Reduce
+        Integer sum = concurrentMap.reduce(1, 
+            (k, v) -> v, 
+            (v1, v2) -> v1 + v2);
+        System.out.println("Sum: " + sum);
+    }
+}
+Interview Q&A:
+Q: ConcurrentHashMap vs Hashtable?
+A: ConcurrentHashMap: fine-grained locking (bucket-level), better concurrency, no null keys/values. Hashtable: coarse-grained locking (entire map), poor concurrency, legacy.
+Q: ConcurrentHashMap vs Collections.synchronizedMap()?
+A: ConcurrentHashMap: better performance (fine-grained locking), atomic operations. synchronizedMap: locks entire map for each operation, poor performance under contention.
+Q: Is ConcurrentHashMap iteration thread-safe?
+A: Weakly consistent. Iterator doesn't throw ConcurrentModificationException but may not reflect latest updates made during iteration.
+
+5.8 ArrayList vs LinkedList
+Code Example (Performance Comparison):
+MRContinueimport java.util.*;
+public class ArrayListVsLinkedList {
+public static void main(String[] args) {
+int size = 100000;
+    List<Integer> arrayList = new ArrayList<>();
+    List<Integer> linkedList = new LinkedList<>();
+    
+    // Add to end - ArrayList faster
+    long start = System.currentTimeMillis();
+    for (int i = 0; i < size; i++) {
+        arrayList.add(i);
+    }
+    long end = System.currentTimeMillis();
+    System.out.println("ArrayList add: " + (end - start) + "ms");
+    
+    start = System.currentTimeMillis();
+    for (int i = 0; i < size; i++) {
+        linkedList.add(i);
+    }
+    end = System.currentTimeMillis();
+    System.out.println("LinkedList add: " + (end - start) + "ms");
+    
+    // Random access - ArrayList much faster
+    start = System.currentTimeMillis();
+    for (int i = 0; i < 1000; i++) {
+        arrayList.get(size / 2);
+    }
+    end = System.currentTimeMillis();
+    System.out.println("ArrayList get: " + (end - start) + "ms");
+    
+    start = System.currentTimeMillis();
+    for (int i = 0; i < 1000; i++) {
+        linkedList.get(size / 2);
+    }
+    end = System.currentTimeMillis();
+    System.out.println("LinkedList get: " + (end - start) + "ms");
+    
+    // Insert at beginning - LinkedList faster
+    start = System.currentTimeMillis();
+    for (int i = 0; i < 1000; i++) {
+        arrayList.add(0, i);
+    }
+    end = System.currentTimeMillis();
+    System.out.println("ArrayList insert at 0: " + (end - start) + "ms");
+    
+    start = System.currentTimeMillis();
+    for (int i = 0; i < 1000; i++) {
+        linkedList.add(0, i);
+    }
+    end = System.currentTimeMillis();
+    System.out.println("LinkedList insert at 0: " + (end - start) + "ms");
+}
+}
+
+**Interview Q&A:**
+
+Q: Time complexity comparison?
+A: 
+- ArrayList: get/set O(1), add/remove end O(1) amortized, add/remove middle O(n)
+- LinkedList: get/set O(n), add/remove ends O(1), add/remove middle O(n) [due to traversal]
+
+Q: Memory overhead?
+A: ArrayList: minimal overhead (just array). LinkedList: significant overhead (2 references per node for doubly-linked structure).
+
+---
+
+### 5.9 Fail-Fast vs Fail-Safe Iterators
+
+**Explanation:**
+
+**Fail-Fast:**
+- Throws ConcurrentModificationException if collection modified during iteration
+- Used by: ArrayList, HashMap, HashSet
+- Uses modCount to track modifications
+
+**Fail-Safe:**
+- Works on cloned copy, no exception
+- Used by: CopyOnWriteArrayList, ConcurrentHashMap
+- May not reflect latest changes
+
+**Code Example:**
+```java
+import java.util.*;
+import java.util.concurrent.*;
+
+public class FailFastFailSafe {
+    public static void main(String[] args) {
+        // Fail-Fast - ArrayList
+        List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+        
+        try {
+            for (Integer num : list) {
+                System.out.println(num);
+                if (num == 3) {
+                    list.remove(num); // ConcurrentModificationException!
+                }
+            }
+        } catch (ConcurrentModificationException e) {
+            System.out.println("Fail-fast: " + e);
+        }
+        
+        // Correct way - use Iterator.remove()
+        list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+        Iterator<Integer> it = list.iterator();
+        while (it.hasNext()) {
+            Integer num = it.next();
+            if (num == 3) {
+                it.remove(); // Safe removal
+            }
+        }
+        System.out.println(list); // [1, 2, 4, 5]
+        
+        // Fail-Safe - CopyOnWriteArrayList
+        List<Integer> copyOnWriteList = new CopyOnWriteArrayList<>(
+            Arrays.asList(1, 2, 3, 4, 5));
+        
+        for (Integer num : copyOnWriteList) {
+            System.out.println(num);
+            if (num == 3) {
+                copyOnWriteList.remove(num); // No exception
+            }
+        }
+        // Iteration shows original values, removal happens on copy
+        
+        // Fail-Safe - ConcurrentHashMap
+        Map<String, Integer> concurrentMap = new ConcurrentHashMap<>();
+        concurrentMap.put("A", 1);
+        concurrentMap.put("B", 2);
+        concurrentMap.put("C", 3);
+        
+        for (Map.Entry<String, Integer> entry : concurrentMap.entrySet()) {
+            System.out.println(entry.getKey());
+            if (entry.getKey().equals("B")) {
+                concurrentMap.remove("B"); // No exception
+            }
+        }
+    }
+}
+```
+
+**Interview Q&A:**
+
+Q: How does fail-fast detection work?
+A: Collection maintains modCount. Iterator stores expectedModCount at creation. Before each operation, checks if modCount == expectedModCount. If not, throws ConcurrentModificationException.
+
+Q: Can we modify collection during fail-fast iteration?
+A: Yes, using Iterator.remove(). This updates both modCount and expectedModCount, keeping them in sync.
+
+Q: Performance of fail-safe collections?
+A: CopyOnWriteArrayList: expensive writes (creates copy), fast reads. Best for read-heavy, low-write scenarios.
+
+---
+
+## SECTION 6: GENERICS
+
+### 6.1 Generics Basics
+
+**Explanation:**
+Type parameters that enable type-safe code without casting. Introduced in Java 5.
+
+**Benefits:**
+1. Type safety at compile-time
+2. Elimination of type casting
+3. Code reusability
+
+**Code Example:**
+```java
+// Generic class
+class Box<T> {
+    private T content;
+    
+    public void set(T content) {
+        this.content = content;
+    }
+    
+    public T get() {
+        return content;
+    }
+}
+
+// Multiple type parameters
+class Pair<K, V> {
+    private K key;
+    private V value;
+    
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+    
+    public K getKey() { return key; }
+    public V getValue() { return value; }
+}
+
+// Generic method
+class Util {
+    public static <T> void printArray(T[] array) {
+        for (T element : array) {
+            System.out.print(element + " ");
+        }
+        System.out.println();
+    }
+    
+    public static <T extends Comparable<T>> T findMax(T[] array) {
+        T max = array[0];
+        for (T element : array) {
+            if (element.compareTo(max) > 0) {
+                max = element;
+            }
+        }
+        return max;
+    }
+}
+
+public class GenericsDemo {
+    public static void main(String[] args) {
+        // Type-safe generic class
+        Box<Integer> intBox = new Box<>();
+        intBox.set(10);
+        Integer value = intBox.get(); // No casting needed
+        
+        Box<String> strBox = new Box<>();
+        strBox.set("Hello");
+        String str = strBox.get();
+        
+        // Pair
+        Pair<String, Integer> pair = new Pair<>("Age", 30);
+        System.out.println(pair.getKey() + ": " + pair.getValue());
+        
+        // Generic method
+        Integer[] intArray = {1, 2, 3, 4, 5};
+        String[] strArray = {"A", "B", "C"};
+        
+        Util.printArray(intArray);
+        Util.printArray(strArray);
+        
+        System.out.println("Max: " + Util.findMax(intArray));
+    }
+}
+```
+
+**Interview Q&A:**
+
+Q: Why use generics?
+A: Type safety (compile-time errors instead of runtime ClassCastException), no casting, code reusability across types.
+
+Q: Can we create array of generics like `new T[10]`?
+A: No. Due to type erasure, generic type information isn't available at runtime. Workaround: `T[] array = (T[]) new Object[10]` (generates warning).
+
+---
+
+### 6.2 Bounded Type Parameters
+
+**Explanation:**
+Restricts type parameter to specific types or subtypes.
+
+**Code Example:**
+```java
+// Upper bound (T must be Number or its subclass)
+class NumberBox<T extends Number> {
+    private T number;
+    
+    public NumberBox(T number) {
+        this.number = number;
+    }
+    
+    public double getDoubleValue() {
+        return number.doubleValue(); // Can call Number methods
+    }
+}
+
+// Multiple bounds (T must extend class and implement interfaces)
+class MultipleB ounds<T extends Number & Comparable<T>> {
+    private T value;
+    
+    public boolean isGreaterThan(T other) {
+        return value.compareTo(other) > 0;
+    }
+}
+
+public class BoundedTypeDemo {
+    public static void main(String[] args) {
+        NumberBox<Integer> intBox = new NumberBox<>(10);
+        NumberBox<Double> doubleBox = new NumberBox<>(3.14);
+        // NumberBox<String> strBox = new NumberBox<>("Hello"); // Compile error!
+        
+        System.out.println(intBox.getDoubleValue()); // 10.0
+    }
+}
+```
+
+---
+
+### 6.3 Wildcards (?, extends, super)
+
+**Explanation:**
+Represent unknown type. Three types:
+1. **Unbounded (?**): Any type
+2. **Upper bounded (? extends T)**: T or its subtypes
+3. **Lower bounded (? super T)**: T or its supertypes
+
+**PECS Principle:** Producer Extends, Consumer Super
+- Use `? extends T` when reading (producer)
+- Use `? super T` when writing (consumer)
+
+**Code Example:**
+```java
+import java.util.*;
+
+public class WildcardsDemo {
+    // Unbounded wildcard - read-only, any type
+    public static void printList(List<?> list) {
+        for (Object obj : list) {
+            System.out.print(obj + " ");
+        }
+        System.out.println();
+    }
+    
+    // Upper bounded wildcard - can read as Number
+    public static double sumOfList(List<? extends Number> list) {
+        double sum = 0;
+        for (Number num : list) {
+            sum += num.doubleValue();
+        }
+        return sum;
+    }
+    
+    // Lower bounded wildcard - can write Integer or its supertypes
+    public static void addIntegers(List<? super Integer> list) {
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        // Cannot read as Integer (could be List<Object>)
+        // Integer num = list.get(0); // Compile error
+    }
+    
+    // PECS demonstration
+    public static void copy(List<? extends Number> source, 
+                           List<? super Number> destination) {
+        for (Number num : source) {
+            destination.add(num);
+        }
+    }
+    
+    public static void main(String[] args) {
+        // Unbounded
+        List<Integer> intList = Arrays.asList(1, 2, 3);
+        List<String> strList = Arrays.asList("A", "B", "C");
+        printList(intList);
+        printList(strList);
+        
+        // Upper bounded
+        List<Integer> integers = Arrays.asList(1, 2, 3);
+        List<Double> doubles = Arrays.asList(1.1, 2.2, 3.3);
+        System.out.println(sumOfList(integers)); // 6.0
+        System.out.println(sumOfList(doubles));  // 6.6
+        
+        // Lower bounded
+        List<Number> numbers = new ArrayList<>();
+        List<Object> objects = new ArrayList<>();
+        addIntegers(numbers);
+        addIntegers(objects);
+        System.out.println(numbers); // [1, 2, 3]
+        
+        // PECS
+        List<Integer> src = Arrays.asList(1, 2, 3);
+        List<Number> dest = new ArrayList<>();
+        copy(src, dest);
+        System.out.println(dest); // [1, 2, 3]
+    }
+}
+```
+
+**Interview Q&A:**
+
+Q: Difference between `List<?>` and `List<Object>`?
+A: `List<?>` is unknown type (read-only). `List<Object>` specifically holds Objects. `List<Integer>` can be assigned to `List<?>` but not `List<Object>`.
+
+Q: When to use `? extends` vs `? super`?
+A: Use `? extends T` when reading (producer—provides T). Use `? super T` when writing (consumer—accepts T). "PECS" principle.
+
+Q: Can we add elements to `List<? extends Number>`?
+A: No (except null). Compiler doesn't know exact type. Could be `List<Integer>`, can't add Double.
+
+---
+
+### 6.4 Type Erasure
+
+**Explanation:**
+Generics implemented via type erasure—generic type information removed at runtime. Replaced with bounds (or Object if unbounded).
+
+**Why?**
+Backward compatibility with pre-Java 5 code.
+
+**Code Example:**
+```java
+// Before erasure
+class Box<T extends Number> {
+    private T value;
+    public void set(T value) { this.value = value; }
+    public T get() { return value; }
+}
+
+// After erasure (bytecode)
+class Box {
+    private Number value; // T replaced with bound
+    public void set(Number value) { this.value = value; }
+    public Number get() { return value; }
+}
+
+public class TypeErasureDemo {
+    public static void main(String[] args) {
+        // At runtime, both have same class
+        List<Integer> intList = new ArrayList<>();
+        List<String> strList = new ArrayList<>();
+        
+        System.out.println(intList.getClass() == strList.getClass()); // true
+        System.out.println(intList.getClass()); // class java.util.ArrayList
+        
+        // Cannot check instanceof with generic type
+        // if (intList instanceof ArrayList<Integer>) {} // Compile error
+        if (intList instanceof ArrayList) {} // OK
+        
+        // Bridge methods for polymorphism
+        class Node<T> {
+            public T data;
+            public Node(T data) { this.data = data; }
+            public void setData(T data) { this.data = data; }
+        }
+        
+        class MyNode extends Node<Integer> {
+            public MyNode(Integer data) { super(data); }
+            
+            // This actually overrides setData(Object), not setData(Integer)
+            // Compiler generates bridge method
+            @Override
+            public void setData(Integer data) {
+                super.setData(data);
+            }
+        }
+    }
+}
+```
+
+**Interview Q&A:**
+
+Q: What is type erasure?
+A: Compiler removes generic type information, replacing type parameters with bounds (or Object). Ensures backward compatibility but loses type info at runtime.
+
+Q: Why can't we create generic array like `new T[10]`?
+A: Type erasure removes T at runtime. JVM can't create array of unknown type. Arrays require reifiable types (type info available at runtime).
+
+Q: What are bridge methods?
+A: Synthetic methods generated by compiler to preserve polymorphism after type erasure. Ensures overridden generic methods work correctly.
+
+---
+
+## SECTION 7: EXCEPTION HANDLING
+
+### 7.1 Exception Hierarchy
+
+**Explanation:**
+Throwable
+├── Error (serious issues, shouldn't catch)
+│   ├── OutOfMemoryError
+│   ├── StackOverflowError
+│   └── VirtualMachineError
+└── Exception
+├── IOException (Checked)
+├── SQLException (Checked)
+└── RuntimeException (Unchecked)
+├── NullPointerException
+├── ArrayIndexOutOfBoundsException
+├── ArithmeticException
+└── ClassCastException
+
+**Checked vs Unchecked:**
+- **Checked**: Must handle with try-catch or declare with throws. Compiler-enforced.
+- **Unchecked** (RuntimeException): Optional handling. Occur due to programming errors.
+
+**Code Example:**
+```java
+import java.io.*;
+
+public class ExceptionDemo {
+    // Checked exception - must declare or handle
+    public static void readFile(String path) throws IOException {
+        FileReader fr = new FileReader(path);
+        fr.close();
+    }
+    
+    // Unchecked exception - optional
+    public static int divide(int a, int b) {
+        return a / b; // May throw ArithmeticException
+    }
+    
+    public static void main(String[] args) {
+        // Handling checked exception
+        try {
+            readFile("file.txt");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        }
+        
+        // Handling unchecked exception
+        try {
+            int result = divide(10, 0);
+        } catch (ArithmeticException e) {
+            System.out.println("Cannot divide by zero");
+        }
+        
+        // Multiple catch blocks (order matters - specific to general)
+        try {
+            String str = null;
+            str.length();
+        } catch (NullPointerException e) {
+            System.out.println("Null pointer");
+        } catch (Exception e) {
+            System.out.println("General exception");
+        }
+        
+        // Multi-catch (Java 7+)
+        try {
+            int[] arr = new int[5];
+            arr[10] = 50;
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+            System.out.println("Array or null error");
+        }
+        
+        // Finally block - always executes
+        try {
+            System.out.println("Try block");
+            return;
+        } catch (Exception e) {
+            System.out.println("Catch block");
+        } finally {
+            System.out.println("Finally block"); // Executes even with return
+        }
+    }
+}
+```
+
+**Interview Q&A:**
+
+Q: When to use checked vs unchecked exceptions?
+A: Checked: recoverable conditions (file not found, network error). Unchecked: programming errors (null pointer, array index). Don't overuse checked exceptions.
+
+Q: Can finally block prevent method return?
+A: Yes, if finally contains return/throw, it overrides try/catch return.
+
+Q: Does finally execute if JVM crashes or System.exit() called?
+A: No. Finally doesn't execute if JVM terminates abnormally or System.exit() called.
+
+---
+
+### 7.2 Custom Exceptions
+
+**Code Example:**
+```java
+// Custom checked exception
+class InsufficientFundsException extends Exception {
+    private double amount;
+    
+    public InsufficientFundsException(double amount) {
+        super("Insufficient funds: " + amount);
+        this.amount = amount;
+    }
+    
+    public double getAmount() {
+        return amount;
+    }
+}
+
+// Custom unchecked exception
+class InvalidAccountException extends RuntimeException {
+    public InvalidAccountException(String message) {
+        super(message);
+    }
+}
+
+class BankAccount {
+    private double balance;
+    
+    public BankAccount(double balance) {
+        this.balance = balance;
+    }
+    
+    public void withdraw(double amount) throws InsufficientFundsException {
+        if (amount > balance) {
+            throw new InsufficientFundsException(amount - balance);
+        }
+        balance -= amount;
+    }
+    
+    public void validateAccount(String accountNumber) {
+        if (accountNumber == null || accountNumber.isEmpty()) {
+            throw new InvalidAccountException("Account number cannot be empty");
+        }
+    }
+}
+
+public class CustomExceptionDemo {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount(1000);
+        
+        try {
+            account.withdraw(1500);
+        } catch (InsufficientFundsException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Short by: " + e.getAmount());
+        }
+        
+        try {
+            account.validateAccount("");
+        } catch (InvalidAccountException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+```
+
+---
+
+### 7.3 Try-with-Resources
+
+**Explanation:**
+Automatically closes resources that implement AutoCloseable. Introduced in Java 7.
+
+**Code Example:**
+```java
+import java.io.*;
+
+public class TryWithResourcesDemo {
+    public static void main(String[] args) {
+        // Traditional approach - manual close
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("file.txt"));
+            String line = br.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        // Try-with-resources - automatic close
+        try (BufferedReader reader = new BufferedReader(new FileReader("file.txt"))) {
+            String line = reader.readLine();
+            System.out.println(line);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // reader.close() called automatically
+        
+        // Multiple resources
+        try (FileInputStream fis = new FileInputStream("input.txt");
+             FileOutputStream fos = new FileOutputStream("output.txt")) {
+            int data;
+            while ((data = fis.read()) != -1) {
+                fos.write(data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // Custom AutoCloseable resource
+        class CustomResource implements AutoCloseable {
+            public CustomResource() {
+                System.out.println("Resource opened");
+            }
+            
+            public void doSomething() {
+                System.out.println("Doing something");
+            }
+            
+            @Override
+            public void close() {
+                System.out.println("Resource closed");
+            }
+        }
+        
+        try (CustomResource resource = new CustomResource()) {
+            resource.doSomething();
+        } // Automatically calls close()
+    }
+}
+```
+
+**Interview Q&A:**
+
+Q: What interface must class implement for try-with-resources?
+A: AutoCloseable (or its subinterface Closeable). close() method called automatically.
+
+Q: In what order are resources closed?
+A: Reverse order of declaration. Last declared, first closed.
+
+Q: Can we access resource outside try block?
+A: No. Resource scope limited to try block. Automatically final or effectively final.
+
+---
+
+This completes the first half. Would you like me to continue with **Section 8: Multithreading & Concurrency** onwards?
